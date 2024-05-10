@@ -1,10 +1,9 @@
 import puppeteer, {Page} from "puppeteer";
+import puppeteerConfig from "../puppeteer.config";
 
 
 export async function qrExtractor(url: string, fieldsToExtract: string[]) {
-    const browser = await puppeteer.launch({
-        headless: true,
-    });
+    const browser = await puppeteer.launch(puppeteerConfig);
     const page:Page = await browser.newPage();
     await page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36")
     await page.goto(url);
