@@ -4,6 +4,7 @@
   "description": "stateless service that processes invoices",
   "main": "src/app.ts",
   "scripts": {
+    "start": "npx tsc && node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
