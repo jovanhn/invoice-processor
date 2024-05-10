@@ -2,7 +2,7 @@ import  { Request, Response }  from 'express';
 const express = require('express');
 import {qrExtractor} from "./qr-extractor/qr_extractor";
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 
