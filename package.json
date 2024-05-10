@@ -1,0 +1,33 @@
+{
+  "name": "invoice-processor",
+  "version": "1.0.0",
+  "description": "stateless service that processes invoices",
+  "main": "src/app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jovanhn/invoice-processor.git"
+  },
+  "keywords": [
+    "qr-code",
+    "invoice-processor",
+    "stateless",
+    "node",
+    "scrape"
+  ],
+  "author": "Jovan Suberic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jovanhn/invoice-processor/issues"
+  },
+  "homepage": "https://github.com/jovanhn/invoice-processor#readme",
+  "dependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.21",
+    "express": "^4.19.2",
+    "puppeteer": "^22.8.0",
+    "typescript": "^5.4.5"
+  }
+}
