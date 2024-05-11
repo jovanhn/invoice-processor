@@ -1,14 +1,57 @@
 import puppeteer, {Page} from "puppeteer";
 
+interface Invoice {
+    id: string,
+    totalAmount: number,
+    dateTime: string,
+    shopFullName: string,
+    address: string,
+    invoiceNumber: string,
+    currency: string,
+    type: string,
+    items: Item[]
+}
+
+interface Item {
+    id: string,
+    name: string,
+    amount: number,
+    priceWithVat: number,
+    totalPrice: number
+}
+
+
+const fieldsLabelToModelMap =
+
+    {
+        'shopFullNameLabel': 'shopFullName',
+        'totalAmountLabel': 'totalAmount',
+        'sdcDateTimeLabel': 'dateTime',
+        'addressLabel': 'address',
+        'invoiceNumberLabel': 'invoiceNumber'
+    }
+
 
 export async function qrExtractor(url: string, fieldsToExtract: string[]) {
-    const browser = await puppeteer.launch();
-    const page:Page = await browser.newPage();
-    await page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36")
+    console.time("qrExtractor");
+    const browser = await puppeteer.launch({headless: true});
+    const page: Page = await browser.newPage();
     await page.goto(url);
-
+    const invoice: Invoice = {
+        id: '',
+        totalAmount: 0,
+        dateTime: '',
+        shopFullName: '',
+        address: '',
+        invoiceNumber: '',
+        currency: 'RSD',
+        type: 'QR',
+        items: []
+    }
     fieldsToExtract.forEach((field) => {
-        getValues(field, page)
+        getValue(field, page).then((value) => {
+            invoice[fieldsLabelToModelMap[field]] =  value;
+        });
     })
 
     //Open specification
@@ -18,17 +61,16 @@ export async function qrExtractor(url: string, fieldsToExtract: string[]) {
     if (linkElement) {
         // Click the link if found
         await linkElement.click();
-        console.log('Clicked on the link:', );
     } else {
         console.error('Specified link not found.');
     }
     // Wait for a moment for the page to update after the click
     await page.waitForNetworkIdle()
 
-    const cellValues = await page.evaluate(() => {
+    const itemValues = await page.evaluate(() => {
         const rows = document.querySelectorAll('tbody[data-bind="foreach: Specifications"] tr');
         const values = [];
-
+        const items: Item[] = []
         rows.forEach(row => {
             const cells = row.querySelectorAll('td[data-bind], strong[data-bind]');
             const rowValues = [];
@@ -39,15 +81,26 @@ export async function qrExtractor(url: string, fieldsToExtract: string[]) {
 
             if (rowValues.length > 0) {
                 values.push(rowValues);
+                const item: Item = {
+                    id: crypto.randomUUID(),
+                    name: rowValues[0],
+                    amount: rowValues[1],
+                    priceWithVat: rowValues[2],
+                    totalPrice: rowValues[3],
+                }
+                items.push(item);
+
             }
         });
 
-        return values;
+        return items;
     });
 
     await browser.close();
-
-    return cellValues;
+    console.timeEnd("qrExtractor");
+    invoice.items = itemValues.slice(0, Math.ceil(itemValues.length / 2));
+    return invoice;
+    // return fieldsToExtract;
 }
 
 // Example usage:
@@ -65,9 +118,8 @@ export async function qrExtractor(url: string, fieldsToExtract: string[]) {
 //     console.error('Error:', err);
 // });
 
-const getValues = async (fieldName: string, page: Page) => {
+const getValue = async (fieldName: string, page: Page) => {
     const elementName = await page.$(`#${fieldName}`)
     const elementValue = await elementName?.evaluate(node => node.textContent.trim());
-    console.log(fieldName, elementValue)
     return elementValue || undefined;
 }
