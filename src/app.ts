@@ -31,7 +31,7 @@ app.get("/", (req: Request, res: Response) => {
 
 
 
-app.get('/dummy/process',(req: Request, res: Response) => {
+app.post('/dummy/process',(req: Request, res: Response) => {
     const r = {
         "id": "",
         "totalAmount": "100,00",
