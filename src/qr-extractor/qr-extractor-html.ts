@@ -17,7 +17,7 @@ const fieldsLabelToModelMap =
     }
 
 
-export const qrExtractorHtml = async (url: string, fieldsToExtract): Promise<Data> => {
+export const qrExtractorHtml = async (url: string, fieldsToExtract) => {
     console.log("qrExtractorHtml started");
     console.time("Simple processing");
 
@@ -44,7 +44,7 @@ export const qrExtractorHtml = async (url: string, fieldsToExtract): Promise<Dat
         })
 
         console.timeEnd("Simple processing");
-        return {data: invoice} // Replace 0 with the actual time taken if needed
+        return invoice
 
     } catch (e) {
         console.error(e);

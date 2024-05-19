@@ -2,8 +2,6 @@ import puppeteer, {Page} from "puppeteer";
 import {Invoice, Item} from "../model/enteties";
 
 
-
-
 const fieldsLabelToModelMap =
 
     {
@@ -33,7 +31,7 @@ export async function qrExtractor(url: string, fieldsToExtract: string[]) {
     }
     fieldsToExtract.forEach((field) => {
         getValue(field, page).then((value) => {
-            invoice[fieldsLabelToModelMap[field]] =  value;
+            invoice[fieldsLabelToModelMap[field]] = value;
         });
     })
 
