@@ -25,6 +25,17 @@ app.post('/process', (req: Request, res: Response) => {
 
 });
 
+app.post('/simple/process/', (req: Request, res: Response) => {
+    const fields = ['shopFullNameLabel','totalAmountLabel','sdcDateTimeLabel', 'addressLabel', 'invoiceNumberLabel']
+    qrExtractorHtml(req.body.url, fields).then(values => {
+        res.json(values);
+    }).catch(err => {
+        console.error('Error:', err);
+        res.json(err);
+    });
+
+});
+
 app.get("/", (req: Request, res: Response) => {
     res.json({"message": "QR Code processor!"});
 })
