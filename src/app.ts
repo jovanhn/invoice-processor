@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 
 let corsOptions = {
-    origin : ['http://localhost:5173','https://jovanhn.github.io'],
+    origin : ['http://localhost:5173','https://jovanhn.github.io', 'https://sparesquare.xyz'],
 }
 
 app.use(cors(corsOptions))
