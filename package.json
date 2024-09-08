@@ -7,7 +7,7 @@
     "deploy": "npx puppeteer browsers install chrome",
     "build": "tsc",
     "start": "node dist/app.js",
-    "test": "jest"
+    "test": "jest -c=jest.config.cjs --no-cache"
   },
   "repository": {
     "type": "git",
