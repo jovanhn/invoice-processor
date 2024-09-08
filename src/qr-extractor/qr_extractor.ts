@@ -1,5 +1,6 @@
 import puppeteer, {Page} from "puppeteer";
 import {Invoice, Item} from "../model/enteties";
+import {formatDateTime} from "../util/date-formatter";
 
 
 const fieldsLabelToModelMap =
@@ -80,7 +81,7 @@ export async function qrExtractor(url: string, fieldsToExtract: string[]) {
     await browser.close();
     console.timeEnd("qrExtractor");
     invoice.items = itemValues.slice(0, Math.ceil(itemValues.length / 2));
-    return invoice;
+    return {...invoice, dateTime: formatDateTime(invoice.dateTime)};
     // return fieldsToExtract;
 }
 

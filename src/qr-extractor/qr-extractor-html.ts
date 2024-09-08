@@ -1,6 +1,7 @@
 import axios from "axios";
 import * as cheerio from 'cheerio';
 import {Invoice} from "../model/enteties";
+import {formatDateTime} from "../util/date-formatter";
 
 interface Data {
     data: any
@@ -23,8 +24,8 @@ export const qrExtractorHtml = async (url: string, fieldsToExtract) => {
 
     try {
         const html = await extractHTML(url);
-        const $ = cheerio.load(html.data);
-        const divElement = $('div[style="width:100%;margin-top: 30px"][data-bind="if: Specifications().length > 0"]');
+        const cheerioData = cheerio.load(html.data);
+        const divElement = cheerioData('div[style="width:100%;margin-top: 30px"][data-bind="if: Specifications().length > 0"]');
         const extractedText = divElement.text().trim();
 
         const invoice: Invoice = {
@@ -39,12 +40,12 @@ export const qrExtractorHtml = async (url: string, fieldsToExtract) => {
             items: []
         }
         fieldsToExtract.forEach((field: string) => {
-            invoice[fieldsLabelToModelMap[field]] = extractFiledValue(field, $)
+            invoice[fieldsLabelToModelMap[field]] = extractFiledValue(field, cheerioData)
 
         })
 
         console.timeEnd("Simple processing");
-        return invoice
+        return {...invoice, dateTime: formatDateTime(invoice.dateTime)};
 
     } catch (e) {
         console.error(e);
@@ -63,9 +64,9 @@ const extractHTML = async (url: string): Promise<Data> => {
     }
 }
 
-const extractFiledValue = (fieldName: string, $: cheerio.Root) => {
+const extractFiledValue = (fieldName: string, cheerioData: any) => {
     try {
-        return $(`#${fieldName}`).text().trim()
+        return cheerioData(`#${fieldName}`).text().trim()
     } catch (error) {
         console.error(`Unable to extract field: ${fieldName} `, error);
     }
